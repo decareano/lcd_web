@@ -7,23 +7,35 @@
 require 'spec_helper'
 
 describe 'lcd_web::default' do
-  context 'When all attributes are default, on Ubuntu 18.04' do
+  context 'CentOS' do
     # for a complete list of available platforms and versions see:
     # https://github.com/chefspec/fauxhai/blob/master/PLATFORMS.md
-    platform 'ubuntu', '18.04'
+    let(:chef_run) do
+	runner = ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04')
+	runner.converge(described_recipe)
+    end
 
     it 'converges successfully' do
       expect { chef_run }.to_not raise_error
+    end
+
+    it 'installs httpd' do
+      expect(chef_run).to install_package('httpd')
+    end
+	
+    it 'enables the httpd service' do
+      expect(chef_run).to enable_service('httpd')
+    end
+
+    it 'starts the httpd service' do
+      expect(chef_run).to start_service('httpd')
+    end
+
+    it 'installs perl' do
+      expect(che_run).to install_package('perl')
     end
   end
-
-  context 'When all attributes are default, on CentOS 7' do
-    # for a complete list of available platforms and versions see:
-    # https://github.com/chefspec/fauxhai/blob/master/PLATFORMS.md
-    platform 'centos', '7'
-
-    it 'converges successfully' do
-      expect { chef_run }.to_not raise_error
-    end
+end
+ 
   end
 end
